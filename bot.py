@@ -62,7 +62,7 @@ class Admins(object):
             return True
         else: return False
         
-    def add_admin(self, user: User) -> int:
+    def add_admin(self, user: User) -> bool:
         if user.id in self.admin_list["admin"]: return False
         else:
             self.admin_list["admin"].append(user.id)
