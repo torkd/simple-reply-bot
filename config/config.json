@@ -1,0 +1,8 @@
+{
+    "admin": {
+        "example1": "example 1"
+    },
+    "user": {
+        "example2": "example 2"
+    }
+}

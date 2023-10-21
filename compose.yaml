@@ -1,0 +1,8 @@
+services:
+  bot:
+    image: "torkd/simple-reply-bot"
+    volumes: 
+      - ./config/:/bot/config/
+    environment:
+      BOT_TOKEN: <BOT_TOKEN>
+      #OPTIONAL OWNER_ID: <OWNER_ID>
