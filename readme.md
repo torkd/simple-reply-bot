@@ -1,5 +1,6 @@
-
 # simple-reply-bot
+
+> Available on [DockerHub](https://hub.docker.com/r/torkd/simple-reply-bot)
 
 A Telegram bot to answer messages with predetermined responses.
 The answers are defined in the config.json file, and support the response to be triggered by either a normal user or an admin. For ease of use, the docker compose will mount a local directory with such file. The config file can be reloaded at any time with the `/reload` command.
