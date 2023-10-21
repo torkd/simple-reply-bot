@@ -62,7 +62,7 @@ class Admins(object):
             return True
         else: return False
         
-    def add_admin(self, user: User) -> bool:
+    def add_admin(self, user: User) -> int:
         if user.id in self.admin_list["admin"]: return False
         else:
             self.admin_list["admin"].append(user.id)
@@ -313,12 +313,16 @@ async def general_commands_handler(message: Message) -> None:
                                     "Do you want to commit this command?"
                                     .format(new_command_handler.command_type, new_command_handler.new_command, new_command_handler.new_answer), reply_markup=builder.as_markup(), parse_mode=ParseMode.MARKDOWN_V2)
 
-    if message.chat.type == "private" and message.forward_from and (message.chat.id in ah.private_add):
+    if message.chat.type == "private" and (message.chat.id in ah.private_add):
         ah.reset_private_add()
-        if ah.add_admin(message.forward_from):            
-            await message.answer("Alright, *{}* has been added as an admin\.".format(message.forward_from.first_name), parse_mode=ParseMode.MARKDOWN_V2)
+        if message.forward_sender_name and not message.forward_from:
+            await message.answer("I'm sorry, but I can't access *{}*'s profile through forwarded messages because of their privacy settings\. "\
+                                 "They can't be added as an admin this way\.".format(message.forward_sender_name), parse_mode=ParseMode.MARKDOWN_V2)
         else:
-            await message.answer("*{}* is already an admin\.".format(message.forward_from.first_name), parse_mode=ParseMode.MARKDOWN_V2)
+            if ah.add_admin(message.forward_from):            
+                await message.answer("Alright, *{}* has been added as an admin\.".format(message.forward_from.first_name), parse_mode=ParseMode.MARKDOWN_V2)
+            else:
+                await message.answer("*{}* is already an admin\.".format(message.forward_from.first_name), parse_mode=ParseMode.MARKDOWN_V2)
         
     if message.text[0] == "/" and (message.chat.type in ("group", "supergroup")):
         try:
