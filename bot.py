@@ -4,6 +4,7 @@ import sys
 import json
 from os import getenv
 import time
+import re
 
 from aiogram import Bot, Dispatcher, Router, types
 from aiogram.enums import ParseMode
@@ -161,7 +162,7 @@ class NewCommandHandler(object):
 
     def set_answer(self, answer_text: str) -> None:
         self.current_step = "commit"
-        self.new_answer = answer_text
+        self.new_answer = answer_text #self.auto_escape(answer_text)
 
     def commit_new_command(self, ch: CommandHandler) -> None:
         ch.add_command(self.new_command, self.new_answer, self.command_type)
@@ -297,14 +298,14 @@ async def general_commands_handler(message: Message) -> None:
                 else:
                     if message.text not in (list(ch.commands_admin.keys()) + list(ch.commands_user.keys())):
                         reply = await message.reply("Alright, now reply to this message with the desired answer\.\n"\
-                                                    "It can only contain text and emojis, but you can format it with [Markdown V2](https://core.telegram.org/bots/api#formatting-options)\.", parse_mode=ParseMode.MARKDOWN_V2)
+                                                    "It can only contain text and emojis, but you can format it as you wish\ (bold, italics, strikethrough, links, etc)!", parse_mode=ParseMode.MARKDOWN_V2)
                         new_command_handler.set_command(reply.message_id, message.text)
                     else:
                         await message.reply("That command already exists\. "\
                                             "Please reply to the previous message again with a different one or reset the procedure with `/addcommand reset`\.\n"\
                                             "You can also delete a command with `/delcommand`\.", parse_mode=ParseMode.MARKDOWN_V2)
             elif new_command_handler.current_step == "answer":
-                new_command_handler.set_answer(message.text)
+                new_command_handler.set_answer(message.md_text)
                 builder = InlineKeyboardBuilder()
                 builder.button(text="Yes", callback_data="commit").button(text="No", callback_data="no_commit")
                 await message.reply("Alright\! Let's recap the new command\.\n"\
