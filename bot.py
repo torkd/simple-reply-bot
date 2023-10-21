@@ -3,13 +3,11 @@ import logging
 import sys
 import json
 from os import getenv
-import time
-import re
 
 from aiogram import Bot, Dispatcher, Router, types
 from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart, Command, ChatMemberUpdatedFilter, IS_MEMBER, IS_NOT_MEMBER
-from aiogram.types import Message, ChatMemberUpdated, Chat, User
+from aiogram.filters import CommandStart, Command
+from aiogram.types import Message, Chat, User
 from aiogram.utils.markdown import bold
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
@@ -162,7 +160,7 @@ class NewCommandHandler(object):
 
     def set_answer(self, answer_text: str) -> None:
         self.current_step = "commit"
-        self.new_answer = answer_text #self.auto_escape(answer_text)
+        self.new_answer = answer_text
 
     def commit_new_command(self, ch: CommandHandler) -> None:
         ch.add_command(self.new_command, self.new_answer, self.command_type)
@@ -297,8 +295,8 @@ async def general_commands_handler(message: Message) -> None:
                     await message.reply("The command contains spaces, which are not allowed. Please reply to the previous message again.")
                 else:
                     if message.text not in (list(ch.commands_admin.keys()) + list(ch.commands_user.keys())):
-                        reply = await message.reply("Alright, now reply to this message with the desired answer\.\n"\
-                                                    "It can only contain text and emojis, but you can format it as you wish\ (bold, italics, strikethrough, links, etc)!", parse_mode=ParseMode.MARKDOWN_V2)
+                        reply = await message.reply("Alright, now reply to this message with the desired answer.\n"\
+                                                    "It can only contain text and emojis, but you can format it as you wish (bold, italics, strikethrough, links, etc)!")
                         new_command_handler.set_command(reply.message_id, message.text)
                     else:
                         await message.reply("That command already exists\. "\
