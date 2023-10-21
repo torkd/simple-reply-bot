@@ -2,9 +2,9 @@
 
 > Available on [DockerHub](https://hub.docker.com/r/torkd/simple-reply-bot)
 
-A Telegram bot to answer messages with predetermined responses.
-The answers are defined in the config.json file, and support the response to be triggered by either a normal user or an admin. For ease of use, the docker compose will mount a local directory with such file. The config file can be reloaded at any time with the `/reload` command.
-More responses can be added either via the `/addcommand` bot command in a private chat with the bot or by editing the config file. To be able to use `/addcommand`you need to first `/claim` the bot in a private chat with it, or provide your Telegram ID as an environment variable in the compose file.
+A Telegram bot to answer messages with predetermined responses.\
+The answers are defined in the config.json file, and support the response to be triggered by either a normal user or an admin. For ease of use, the docker compose will mount a local directory with such file. The config file can be reloaded at any time with the `/reload` command.\
+More responses can be added either via the `/addcommand` bot command in a private chat with the bot or by editing the config file. To be able to use `/addcommand`you need to first `/claim` the bot in a private chat with it, or provide your Telegram ID as an environment variable in the compose file.\
 **Be sure to use a compose file, you can find an example at the bottom.**
 
 ## Installation
@@ -16,8 +16,8 @@ More responses can be added either via the `/addcommand` bot command in a privat
 - Start the container with `docker compose up -d` (`-d` option for `detached` mode; the container will run in the background).
 
 ## Commands
-Commands with a checkmark in the `Owner` or `Admin` columns require you to be either an admin or the owner.
-Commands with a checkmark in the `Private` *only* work in a private chat with the bot.
+Commands with a checkmark in the `Owner` or `Admin` columns require you to be either an admin or the owner.\
+Commands with a checkmark in the `Private` *only* work in a private chat with the bot.\
 
 |               | Owner              | Admin              | Private            | Notes                                                                                                                                                                                                                                                     |
 |---------------|--------------------|--------------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -31,10 +31,10 @@ Commands with a checkmark in the `Private` *only* work in a private chat with th
 
 
 ## Config (config.json)
-This is a base config file.
-Responses in the `admin` section will only be sent if the command is triggered by an admin.
-Responses in the `user` section will be triggered by anyone.
-Just add more commands as you please by adding to the JSON dictionary. The key will be the `/command` the bot will respond to, the value will be the actual response.
+This is a base config file.\
+Responses in the `admin` section will only be sent if the command is triggered by an admin.\
+Responses in the `user` section will be triggered by anyone.\
+Just add more commands as you please by adding to the JSON dictionary. The key will be the `/command` the bot will respond to, the value will be the actual response.\
 Responses support [Telegram V2 markdown](https://core.telegram.org/bots/api#formatting-options).
 
 ```json
@@ -49,8 +49,8 @@ Responses support [Telegram V2 markdown](https://core.telegram.org/bots/api#form
 ```
 
 ## Docker compose (compose.yaml)
-This is an example of the docker compose file you can use to run the bot.
-Make sure to put your `config.json` in the mounted directory, or the container will not start.
+This is an example of the docker compose file you can use to run the bot.\
+Make sure to put your `config.json` in the mounted directory, or the container will not start.\
 If you wish to provide the `OWNER_ID`, make sure to remove the comment.
 
 ```yaml
