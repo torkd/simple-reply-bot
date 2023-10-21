@@ -17,7 +17,7 @@ More responses can be added either via the `/addcommand` bot command in a privat
 
 ## Commands
 Commands with a checkmark in the `Owner` or `Admin` columns require you to be either an admin or the owner.\
-Commands with a checkmark in the `Private` *only* work in a private chat with the bot.\
+Commands with a checkmark in the `Private` *only* work in a private chat with the bot.
 
 |               | Owner              | Admin              | Private            | Notes                                                                                                                                                                                                                                                     |
 |---------------|--------------------|--------------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
