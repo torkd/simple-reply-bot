@@ -247,6 +247,31 @@ async def delete_command(message: Message) -> None:
         builder.adjust(4, repeat=True)
         await message.answer("Which command do you wish to remove?", reply_markup=builder.as_markup())
 
+@dp.message(Command("commandlist"))
+async def command_list(message: Message) -> None:
+    if ah.is_admin(message.from_user):
+        admin_list = "".join(["/{}\n".format(x) for x in ch.commands_admin.keys()])
+        user_list = "".join(["/{}\n".format(x) for x in ch.commands_user.keys()])
+        await message.answer("Here is a list of registered commands!\n"\
+                             "\nAdmin commands:\n"\
+                             "{}"\
+                             "\nUser commands:\n"\
+                             "{}".format(admin_list, user_list))
+        
+@dp.message(Command("help"))
+async def help_command(message: Message) -> None:
+    await message.answer("Here is a list of my native commands\.\n"\
+                         "/addadmin: Adds an admin\.\n"\
+                         "/deladmin: Removes an admin\.\n"\
+                         "/reload: Reloads the configuration file\.\n"\
+                         "/addcommand: Adds a new command\.\n"\
+                         "/delcommand: Deletes a user registered command\.\n"\
+                         "/commandlist: Brings up a list of user registered commands\.\n"\
+                         "/help: Brings up this help text\.\n\n"\
+                         "For more info please visit my [DockerHub](https://hub.docker.com/r/torkd/simple-reply-bot) "\
+                         "or [GitHub](https://github.com/torkd/simple-reply-bot) pages\.", parse_mode=ParseMode.MARKDOWN_V2)
+
+
 @dp.message(Command("claim"))
 async def claim_bot(message: Message) -> None:
     if message.chat.type == "private":    
@@ -274,13 +299,14 @@ async def add_admin(message: Message) -> None:
 
 @dp.message(Command("deladmin"))
 async def delete_admin(message: Message) -> None:
-    if ah.is_owner(message.from_user):
-        if message.chat.type == "private":
+    if ah.is_owner(message.from_user) and message.chat.type == "private":
+        if ah.admin_list["admin"]:
             builder = InlineKeyboardBuilder()
             for user in ah.admin_list["admin_info"].keys():
                 builder.button(text="{}".format(ah.admin_list["admin_info"][user]), callback_data="remove_admin:{}".format(user))
             builder.adjust(3, repeat=True)
             await message.answer("Who would you like to remove?", reply_markup=builder.as_markup())
+        else: await message.answer("There are no admins to remove.")
 
 @dp.message()
 async def general_commands_handler(message: Message) -> None:
@@ -293,6 +319,9 @@ async def general_commands_handler(message: Message) -> None:
             if new_command_handler.current_step == "command":
                 if " " in message.text:
                     await message.reply("The command contains spaces, which are not allowed. Please reply to the previous message again.")
+                elif message.text in ("addadmin", "deladmin", "reload", "addcommand", "delcommand", "commandlist", "help", "claim"):
+                    await message.answer("That command is already reserved for my functions\.\n"\
+                                         "Please reply to the previous message again with a different one or reset the procedure with `/addcommand reset`\.", parse_mode=ParseMode.MARKDOWN_V2)
                 else:
                     if message.text not in (list(ch.commands_admin.keys()) + list(ch.commands_user.keys())):
                         reply = await message.reply("Alright, now reply to this message with the desired answer.\n"\
@@ -324,13 +353,14 @@ async def general_commands_handler(message: Message) -> None:
             else:
                 await message.answer("*{}* is already an admin\.".format(message.forward_from.first_name), parse_mode=ParseMode.MARKDOWN_V2)
         
-    if message.text[0] == "/" and (message.chat.type in ("group", "supergroup")):
-        try:
-            if "@" in message.text:
-                message_text = message.text.split("@")[0]
-            else: message_text = message.text
-            await message.answer(ch.get_answer(message_text[1:], message.from_user, ah), parse_mode=ParseMode.MARKDOWN_V2)
-        except KeyError:
+    if message.text[0] == "/" and ((message.chat.type in ("group", "supergroup")) or ah.is_admin(message.from_user)):
+        if "@" in message.text:
+            message_text = message.text.split("@")[0]
+        else: message_text = message.text
+        answer = ch.get_answer(message_text[1:], message.from_user, ah)
+        if answer:
+            await message.answer(answer, parse_mode=ParseMode.MARKDOWN_V2)
+        else:
             logging.warning("Command not found: {}".format(message.text[1:]))
     else: pass
 
